@@ -1,22 +1,23 @@
 #include<stdio.h>
 #include <string.h>
 #include <stdlib.h>
-// “\t”
+
 typedef struct prod{
-   char  name[15];
-   int  size;
-   int  complex;
+   int num; // El numero del producto
+   char name[15]; // Nombre del Producto
+   int size; // tamano del producto
+   int complex; // complejidad
 }Producto;
 
 int countlines(char *filename){
     FILE *fp;
-    int count = 0;  // Line counter (result)
+    int count = 0;  // contador de lineas
     char c;  // To store a character read from file
 
     // Open the file
     fp = fopen(filename, "r");
 
-    // Check if file exists
+    // chequea si el archivo existe
     if (fp == NULL)
     {
         printf("Could not open file %s", filename);
@@ -24,10 +25,11 @@ int countlines(char *filename){
     }
 
     // Extract characters from file and store in character c
-    for (c = getc(fp); c != EOF; c = getc(fp))
-        if (c == '\n') // Increment count if this character is newline
+    for (c = getc(fp); c != EOF; c = getc(fp)){
+        if (c == '\n'){
             count = count + 1;
-
+        }
+    }
     // Close the file
     fclose(fp);
     //printf("The file %s has %d lines\n ", filename, count);
@@ -43,6 +45,7 @@ int read(int numLines, char *filename){
   ssize_t read;
   char *token;
   int contador = 0;
+  int numero = 0; // numero del producto
 
   FILE *file = fopen ( filename, "r" );
 
@@ -62,8 +65,11 @@ int read(int numLines, char *filename){
     /* iteramos sobre los otros token */
     while( token != NULL ) {
       if (contador == 0) {
+        numero = numero + 1; // es un producto nuevo, le registramos su numero
+        newProduct.num = numero;
         //newProduct.name = token;
         strcpy(newProduct.name,token);
+        printf("NUMERO %d\n", newProduct.num);
         printf("NOMBRE %s\n", newProduct.name);
       }
       if (contador == 1) {
