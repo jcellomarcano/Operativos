@@ -45,14 +45,21 @@ int main(void) {
   queso.complex = 15;
 
   Producto jam;
-  jam.num= 1;
-  strcpy(jam.name,"ham");
+  jam.num = 2;
+  strcpy(jam.name,"jamon");
   jam.size = 10;
   jam.complex = 15;
+
+  Producto pan;
+  pan.num= 3;
+  strcpy(pan.name,"pan");
+  pan.size = 12;
+  pan.complex = 20;
 
   enqueue(cola, cafe);
   enqueue(cola, queso);
   enqueue(cola, jam);
+  enqueue(cola, pan);
 
   //val = top(cola);
 
@@ -64,6 +71,7 @@ int main(void) {
   dequeue(cola);
   top(cola);
   dequeue(cola);
+  top(cola);
   dequeue(cola);
 
   return 0;
