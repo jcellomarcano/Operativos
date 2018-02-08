@@ -23,7 +23,7 @@ typedef struct queue_{
 
 queue* create_queue();
 void enqueue(queue* q, Producto val);
-char top(queue* q);
+void top(queue* q);
 void dequeue(queue*q);
 
 int main(void) {
@@ -56,10 +56,17 @@ int main(void) {
   pan.size = 12;
   pan.complex = 20;
 
+  Producto cacao;
+  cacao.num= 4;
+  strcpy(cacao.name,"cacao");
+  cacao.size = 15;
+  cacao.complex = 21;
+
   enqueue(cola, cafe);
   enqueue(cola, queso);
   enqueue(cola, jam);
   enqueue(cola, pan);
+  enqueue(cola, cacao);
 
   //val = top(cola);
 
@@ -72,6 +79,9 @@ int main(void) {
   top(cola);
   dequeue(cola);
   top(cola);
+  dequeue(cola);
+  top(cola);
+  dequeue(cola);
   dequeue(cola);
 
   return 0;
@@ -133,11 +143,14 @@ void dequeue(queue* q) {
     }
 }
 
-char top(queue* s) {
+void top(queue* q) {
+    if ((q->size) == 0) {
+      printf("La cola esta vacia \n");
+    }
 
-    node* temp = s->head;
+    node* temp = q->head;
 
     Producto value = temp->product;
     printf("%s\n",value.name );
-    return *value.name;
+
 }
