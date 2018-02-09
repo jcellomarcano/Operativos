@@ -21,8 +21,8 @@ typedef struct stack_{
 
 stack* create_stack();
 void push(stack* s, Producto val);
-char top(stack* s);
-void pop(stack*s);
+void top(stack* s);
+Producto* pop(stack*s);
 
 int main(void) {
 
@@ -55,7 +55,6 @@ int main(void) {
   //val = top(pila);
 
   //printf("TOPE %c\n", val);
-
   top(pila);
   pop(pila);
   top(pila);
@@ -83,7 +82,7 @@ void push(stack* s, Producto pro) {
     node* temp = (node*)malloc(sizeof(node)); //allocates
 
     if ( temp == NULL ) {
-        printf("Unable to allocate memory\n");
+        printf("No se puede asignar el espacio de memoria solicitado\n");
     }
 
     else{
@@ -95,28 +94,41 @@ void push(stack* s, Producto pro) {
 
 }
 
-void pop(stack* s) {
+Producto* pop(stack* s) {
 
     if ((s->size) == 0) {
       printf("La pila esta vacia \n");
+      return NULL;
     }
     else{
       node* temp;
+      node* temp2;
 
       temp = s->head;
       s->head = temp->next;
-      free(temp);
       s->size = (s->size) - 1; //subtracts from counter
+      temp2 = temp;
+      //printf("%p\n", &(temp2->product));
+      //Producto casa = (temp2->product);
+      //printf("%s\n", casa.name);
+      free(temp);
+      //printf("%s\n", casa.name);
+      //printf("%p\n",&(temp2->product) );
+      return &(temp2->product);
     }
 
 
 }
 
-char top(stack* s) {
+void top(stack* s) {
+  if ((s->size) == 0) {
+    printf("La pila esta vacia \n");
+  }
 
+  else{
     node* temp = s->head;
 
     Producto value = temp->product;
     printf("%s\n",value.name );
-    return *value.name;
+  }
 }

@@ -24,7 +24,7 @@ typedef struct queue_{
 queue* create_queue();
 void enqueue(queue* q, Producto val);
 void top(queue* q);
-void dequeue(queue*q);
+Producto* dequeue(queue*q);
 
 int main(void) {
 
@@ -126,20 +126,26 @@ void enqueue(queue* q, Producto pro) {
 
 }
 
-void dequeue(queue* q) {
+Producto* dequeue(queue* q) {
   int salida = 0;
     if ((q->size) == 0) {
       printf("La cola esta vacia \n");
+      return NULL;
     }
     else{
       node* temp;
+      node* temp2;
+
       temp = q->head;
       q->head = q->head->prev;
+      temp2 = temp;
+      //printf("%p\n", &(temp2->product));
+      //Producto casa = (temp2->product);
+      //printf("----%s\n", casa.name);
       //q->head = temp->next;
       free(temp);
       q->size = (q->size) - 1; //subtracts from counter
-
-      // buscamos la nueva cabeza de la cola
+      return &(temp2->product);
     }
 }
 
