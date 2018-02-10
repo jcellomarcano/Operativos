@@ -2,7 +2,7 @@
 #include "supermercado.h"
 
 int main(){
-	
+
 	int opcion = 0;                      // Para  el menu
 	char modalidad = 'i';                // cambia lo que se muestra en la consola y en el archvo final
 	int carritos = 3;                    // cantidad  de carritos en la cola
@@ -15,8 +15,8 @@ int main(){
 	int capacidadMaxBolsa = 120;         // caacidad maxima de una bolsa en centimetros cubicos
 
 	Menu(&carritos, &cantidadMaxCarrito, &capacidadMaxBanda,
-				      &velocidadCajera, &velocidadEmbolsador, 
-				      &tiempoFacturacion, &capacidadMaxAreaEmbolsado, 
+				      &velocidadCajera, &velocidadEmbolsador,
+				      &tiempoFacturacion, &capacidadMaxAreaEmbolsado,
 				      &capacidadMaxBolsa, &modalidad);
 
 }

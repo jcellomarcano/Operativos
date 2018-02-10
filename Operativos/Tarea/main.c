@@ -323,7 +323,7 @@ void main(int argc, char *argv[])
   //printf("-----%s\n",(*copiaArrayProductos).name);
 
   int carritos = 3;
-  int CantidadMaxCarrito = 12;
+  int CantidadMaxCarrito = 5;
   int random; // cantidad de productos que vamos a agarrar por cada carrito
   int random2; // producto a agarrar por cada iteracion
   srand(time(NULL));
@@ -363,13 +363,7 @@ void main(int argc, char *argv[])
     // ponemos al cliente a hacer la cola de la caja de acuerdo al orden de llegada
 
     enqueue(cola, pila); // le pasamos el apuntador a la pila, no el apuntador del apuntador a la pila
-    printf("SIZE DE LA COLA %d\n", cola->size );
+    //printf("SIZE DE LA COLA %d\n", cola->size );
   }
-  int velocidadCajera = 1;             // velocidad de la cajera en operaciones or segundo
-	int velocidadEmbolsador = 4;         // velocidad del embolsador en segundos por bolsa
-	int tiempoFacturacion = 130;         // tiempo de facturacion en segundos
-	int capacidadMaxAreaEmbolsado = 150; // capacidad del area de embolsado en centimetros cubicos
-	int capacidadMaxBolsa = 120;         // caacidad maxima de una bolsa en centimetros cubicos
-
 
 }
