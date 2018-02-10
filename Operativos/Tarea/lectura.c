@@ -307,6 +307,101 @@ stack* dequeue(queue* q) {
     }
 }
 
+//------------------------------------- COLA DE PRODUCTOS/ Banda transportadora
+
+typedef struct Node_{
+    Producto product;
+    struct Node_ *next;
+    struct Node_ *prev;
+}Node;
+
+typedef struct Queue_{
+    unsigned int size;
+    int ccEnBanda; // cuenta la cantidad de cc que hay en la banda transportadora
+    Node* head;
+    Node* tail;
+}colaa;
+
+colaa* crecreate_queue(){ //initializes the queue
+
+    colaa* cola = malloc (sizeof(colaa));
+
+    cola->size = 0;
+    cola->head = NULL;
+    cola->tail = NULL;
+    cola->ccEnBanda = 0;
+
+    return cola;
+
+}
+
+void enenqueue(colaa* q, Producto pro) {
+
+    Node* temp = (Node*)malloc(sizeof(Node)); //allocates
+
+    if ( temp == NULL ) {
+        printf("Unable to allocate memory\n");
+    }
+    else if ((q->size) == 0) {
+      temp->next = q->head;
+      temp->product = pro;
+      //(temp->next)->prev = temp;
+      q->head = temp;
+      q->head->next = NULL;
+      q->tail = temp;
+      q->tail->next = NULL;
+      q->size = (q->size) + 1; //bumps the counter for how many elements are in the queue
+      q->ccEnBanda = q->ccEnBanda + pro.size;
+    }
+    else{
+      temp->next = q->tail;
+      q->tail->prev = temp;
+      temp->product = pro;
+      q->tail = temp;
+      q->size = (q->size) + 1; //bumps the counter for how many elements are in the queue
+      q->ccEnBanda = q->ccEnBanda + pro.size;
+    }
+
+}
+
+Producto* dedequeue(colaa* q) {
+  int salida = 0;
+    if ((q->size) == 0) {
+      printf("La cola esta vacia \n");
+      return NULL;
+    }
+    else{
+      Node* temp;
+      Node* temp2;
+
+      temp = q->head;
+      q->head = q->head->prev;
+      temp2 = temp;
+      //printf("%p\n", &(temp2->product));
+      //Producto casa = (temp2->product);
+      //printf("----%s\n", casa.name);
+      //q->head = temp->next;
+      free(temp);
+      q->size = (q->size) - 1; //subtracts from counter
+      q->ccEnBanda = q->ccEnBanda - temp2->product.size;
+      return &(temp2->product);
+    }
+}
+
+int tope(colaa* q) {
+    if ((q->size) == 0) {
+      printf("La cola esta vacia \n");
+    }
+
+    Node* temp = q->head;
+
+    Producto value = temp->product;
+    printf("%d\n",value.size );
+    return value.size;
+
+}
+
+
 void main(int argc, char *argv[])
 {
   Producto* arrayProductos; // Apunta al inicio del arreglo
@@ -362,7 +457,7 @@ void main(int argc, char *argv[])
     }
     // ponemos al cliente a hacer la cola de la caja de acuerdo al orden de llegada
 
-    enqueue(cola, pila); // le pasamos el apuntador a la pila, no el apuntador del apuntador a la pila
+    enqueue(cola, pila); //guardamos la pila en la cola
     printf("SIZE DE LA COLA %d\n", cola->size );
   }
   int velocidadCajera = 1;             // velocidad de la cajera en operaciones or segundo
@@ -370,6 +465,34 @@ void main(int argc, char *argv[])
 	int tiempoFacturacion = 130;         // tiempo de facturacion en segundos
 	int capacidadMaxAreaEmbolsado = 150; // capacidad del area de embolsado en centimetros cubicos
 	int capacidadMaxBolsa = 120;         // caacidad maxima de una bolsa en centimetros cubicos
+  int capacidadMaxBanda = 200;
+
+  //proceso completo
+  /*while ((cola->size != 0) && (pilaa->size != 0)) { // y embolsador termino de embolsar
+
+    stack* pilaa;
+    pilaa = dequeue(c);
+
+    // atendemos a cada cliente
+    while ((pilaa->size != 0) && (finEmpaquetado != 1)) { // y la banda transportadora este vacia
+      int cantidadActualBanda = 0; // Cuenta el espacio almacenado de la banda
+      int finEmpaquetado = 0; // cero representa el false
+
+      // Aqui se llena la banda cada ciclo antes de que la cajera tome el producto
+      // se crea la cola de la banda transportadora
+      colaa =
+      while () { // mientras no entre ningun otro producto dentro de la banda
+        // se llena la banda transportadora hasta su maxima capacidad posible
+
+      }
+
+      // Aqui se pondria el enter y la cajera empieza a atender y se mide el tiempo
 
 
+
+
+    }
+
+  }
+*/
 }

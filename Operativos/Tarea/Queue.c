@@ -1,6 +1,8 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+//#include<sys/wait.h> // wait
+//#include <unistd.h> // fork
 
 typedef struct prod{
    int num; // El numero del producto
@@ -9,28 +11,29 @@ typedef struct prod{
    int complex; // complejidad
 }Producto;
 
-typedef struct node_{
+typedef struct Node_{
     Producto product;
-    struct node_ *next;
-    struct node_ *prev;
-}node;
+    struct Node_ *next;
+    struct Node_ *prev;
+}Node;
 
-typedef struct queue_{
+typedef struct Queue_{
     unsigned int size;
-    node* head;
-    node* tail;
-}queue;
+    int ccEnBanda; // cuenta la cantidad de cc que hay en la banda transportadora
+    Node* head;
+    Node* tail;
+}colaa;
 
-queue* create_queue();
-void enqueue(queue* q, Producto val);
-void top(queue* q);
-Producto* dequeue(queue*q);
+colaa* crecreate_queue();
+void enenqueue(colaa* q, Producto val);
+int tope(colaa* q);
+Producto* dedequeue(colaa*q);
 
 int main(void) {
 
   char value, val;
 
-  queue* cola = create_queue();
+  colaa* cola = crecreate_queue();
 
   Producto cafe;
   cafe.num= 0;
@@ -62,46 +65,50 @@ int main(void) {
   cacao.size = 15;
   cacao.complex = 21;
 
-  enqueue(cola, cafe);
-  enqueue(cola, queso);
-  enqueue(cola, jam);
-  enqueue(cola, pan);
-  enqueue(cola, cacao);
+  enenqueue(cola, cafe);
+  enenqueue(cola, queso);
+  enenqueue(cola, jam);
+  enenqueue(cola, pan);
+  enenqueue(cola, cacao);
 
-  //val = top(cola);
+  //val = tope(cola);
 
   //printf("TOPE %c\n", val);
 
-  top(cola);
-  dequeue(cola);
-  top(cola);
-  dequeue(cola);
-  top(cola);
-  dequeue(cola);
-  top(cola);
-  dequeue(cola);
-  top(cola);
-  dequeue(cola);
-  dequeue(cola);
+  tope(cola);
+  dedequeue(cola);
+  tope(cola);
+  dedequeue(cola);
+  tope(cola);
+  dedequeue(cola);
+  tope(cola);
+  dedequeue(cola);
+  tope(cola);
+  dedequeue(cola);
+  dedequeue(cola);
+
+  printf("OCUPADO EN LA BANDA %d\n",cola->ccEnBanda );
+
 
   return 0;
 }
 
-queue* create_queue(){ //initializes the queue
+colaa* crecreate_queue(){ //initializes the queue
 
-    queue* cola = malloc (sizeof(queue));
+    colaa* cola = malloc (sizeof(colaa));
 
     cola->size = 0;
     cola->head = NULL;
     cola->tail = NULL;
+    cola->ccEnBanda = 0;
 
     return cola;
 
 }
 
-void enqueue(queue* q, Producto pro) {
+void enenqueue(colaa* q, Producto pro) {
 
-    node* temp = (node*)malloc(sizeof(node)); //allocates
+    Node* temp = (Node*)malloc(sizeof(Node)); //allocates
 
     if ( temp == NULL ) {
         printf("Unable to allocate memory\n");
@@ -115,6 +122,7 @@ void enqueue(queue* q, Producto pro) {
       q->tail = temp;
       q->tail->next = NULL;
       q->size = (q->size) + 1; //bumps the counter for how many elements are in the queue
+      q->ccEnBanda = q->ccEnBanda + pro.size;
     }
     else{
       temp->next = q->tail;
@@ -122,19 +130,20 @@ void enqueue(queue* q, Producto pro) {
       temp->product = pro;
       q->tail = temp;
       q->size = (q->size) + 1; //bumps the counter for how many elements are in the queue
+      q->ccEnBanda = q->ccEnBanda + pro.size;
     }
 
 }
 
-Producto* dequeue(queue* q) {
+Producto* dedequeue(colaa* q) {
   int salida = 0;
     if ((q->size) == 0) {
       printf("La cola esta vacia \n");
       return NULL;
     }
     else{
-      node* temp;
-      node* temp2;
+      Node* temp;
+      Node* temp2;
 
       temp = q->head;
       q->head = q->head->prev;
@@ -145,18 +154,20 @@ Producto* dequeue(queue* q) {
       //q->head = temp->next;
       free(temp);
       q->size = (q->size) - 1; //subtracts from counter
+      q->ccEnBanda = q->ccEnBanda - temp2->product.size;
       return &(temp2->product);
     }
 }
 
-void top(queue* q) {
+int tope(colaa* q) {
     if ((q->size) == 0) {
       printf("La cola esta vacia \n");
     }
 
-    node* temp = q->head;
+    Node* temp = q->head;
 
     Producto value = temp->product;
-    printf("%s\n",value.name );
+    printf("%d\n",value.size );
+    return value.size;
 
 }
