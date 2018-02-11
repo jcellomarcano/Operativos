@@ -216,9 +216,10 @@ Producto* pop(stack* s) {
 
 }
 
-void top(stack* s) {
+int top(stack* s) {
   if ((s->size) == 0) {
     printf("La pila esta vacia \n");
+    return 0;
   }
 
   else{
@@ -226,6 +227,7 @@ void top(stack* s) {
 
     Producto value = temp->product;
     printf("%s\n",value.name );
+    return value.size;
   }
 }
 
@@ -467,32 +469,44 @@ void main(int argc, char *argv[])
 	int capacidadMaxBolsa = 120;         // caacidad maxima de una bolsa en centimetros cubicos
   int capacidadMaxBanda = 200;
 
+  // apartir de aqui se deben tomar en cuenta las modalidades (un poco mas adelante)
   //proceso completo
   /*while ((cola->size != 0) && (pilaa->size != 0)) { // y embolsador termino de embolsar
 
     stack* pilaa;
     pilaa = dequeue(c);
+    int finEmpaquetado = 0; // cero representa el false
 
     // atendemos a cada cliente
     while ((pilaa->size != 0) && (finEmpaquetado != 1)) { // y la banda transportadora este vacia
       int cantidadActualBanda = 0; // Cuenta el espacio almacenado de la banda
-      int finEmpaquetado = 0; // cero representa el false
+      //int finEmpaquetado = 0; // cero representa el false
 
+      int llenarBanda = 0;
       // Aqui se llena la banda cada ciclo antes de que la cajera tome el producto
       // se crea la cola de la banda transportadora
-      colaa =
-      while () { // mientras no entre ningun otro producto dentro de la banda
-        // se llena la banda transportadora hasta su maxima capacidad posible
+      colaa colax = crecreate_queue();
+      int chequeo;
+      Producto produ;
 
+      while (llenarBanda != 1) {
+        // se llena la banda transportadora hasta su maxima capacidad posible
+        chequeo = top(pilaa);
+        if (((colaa->ccEnBanda)+chequeo) <= capacidadMaxBanda) {
+          &produ = pop(pilaa);
+          enenqueue(colax,produ);
+        }
+        else{
+          llenarBanda = 1;
+        }
       }
 
-      // Aqui se pondria el enter y la cajera empieza a atender y se mide el tiempo
-
+      // Aqui se pone el enter y la cajera empieza a atender y se mide el tiempo
 
 
 
     }
 
-  }
-*/
+  }*/
+
 }
