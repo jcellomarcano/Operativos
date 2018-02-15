@@ -4,6 +4,8 @@
 #include <string.h>
 #include <stdlib.h>
 #include <time.h>
+#include <stdbool.h>
+#include <unistd.h>
 
 #define TRUE 0 == 0
 #define FALSE 0 == 1
@@ -50,7 +52,7 @@ int countlines(char *filename){
     return count;
 };
 
-Producto *read(int numLines, char *filename, int *capacidadMaxBanda){
+Producto *readd(int numLines, char *filename, int *capacidadMaxBanda, int *capacidadMaxAreaEmbolsado){
 
     Producto *arrayP = malloc(numLines * sizeof(Producto));
     Producto *InicioArray = arrayP;
@@ -97,9 +99,14 @@ Producto *read(int numLines, char *filename, int *capacidadMaxBanda){
 
                 /* para fijar el tamao maximo de la banda al del objeto mas grande, para evitar rollos */
 
-                if(newProduct.size > capacidadMaxBanda)
+                if(newProduct.size > *capacidadMaxBanda)
                 {
-                    capacidadMaxBanda = newProduct.size
+                    *capacidadMaxBanda = newProduct.size;
+                }
+
+                if(newProduct.size > *capacidadMaxAreaEmbolsado)
+                {
+                    *capacidadMaxAreaEmbolsado = newProduct.size;
                 }
                 //printf("TAMANO %d\n",newProduct.size);
             }
@@ -166,9 +173,8 @@ void put(node **list, node* nod){
     }
 }
 
-/* Crea un nodo con nodo->dato == e y lo ponee en list *
- * en orden alfabetico según el campo dato.name.    *
- * Retorna 1 si se insert con éxito y 0 si no.       */
+
+ //devuelve 1 si se insert con éxito y 0 si no.
 int insert(node **list, Producto p){
 
     int r; /* valor de retorno */
@@ -210,7 +216,7 @@ stack *create_stack(){ //initializes the stack
     stack *pila = malloc (sizeof(stack));
 
     pila->size = 0;
-    cola->ccEnEmbolsado = 0;
+    pila->ccEnEmbolsado = 0;
     pila->head = NULL;
 
     return pila;
@@ -306,9 +312,9 @@ typedef struct queue_{
 
 }queue;
 
-queue *create_queue(){ //initializes the queue
+queue* create_queue(){ //initializes the queue
 
-    queue *cola = malloc (sizeof(queue));
+    queue* cola = malloc (sizeof(queue));
 
     cola->size = 0;
     cola->head = NULL;
@@ -381,25 +387,21 @@ stack *dequeue(queue *q){
 //------------------------------------- COLA DE PRODUCTOS/ Banda transportadora
 
 typedef struct Node_{
-
     Producto product;
     struct Node_ *next;
     struct Node_ *prev;
-
 }Node;
 
 typedef struct Queue_{
-
     unsigned int size;
     int ccEnBanda; // cuenta la cantidad de cc que hay en la banda transportadora
-    Node *head;
-    Node *tail;
-
+    Node* head;
+    Node* tail;
 }colaa;
 
-colaa *crecreate_queue(){ //initializes the queue
+colaa* crecreate_queue(){ //initializes the queue
 
-    colaa *cola = malloc(sizeof(colaa));
+    colaa* cola = malloc (sizeof(colaa));
 
     cola->size = 0;
     cola->head = NULL;
@@ -410,80 +412,70 @@ colaa *crecreate_queue(){ //initializes the queue
 
 }
 
-void enenqueue(colaa *q, Producto pro){
+void enenqueue(colaa* q, Producto pro) {
 
-    Node *temp = (Node*)malloc(sizeof(Node)); //allocates
+    Node* temp = (Node*)malloc(sizeof(Node)); //allocates
 
-    if(temp == NULL)
-    {
+    if ( temp == NULL ) {
         printf("Unable to allocate memory\n");
     }
-
-    else if((q->size) == 0)
-    {
-        temp->next = q->head;
-        temp->product = pro;
-        q->head = temp;
-        q->head->next = NULL;
-        q->tail = temp;
-        q->tail->next = NULL;
-        q->size = (q->size) + 1; //bumps the counter for how many elements are in the queue
-        q->ccEnBanda = q->ccEnBanda + pro.size;
+    else if ((q->size) == 0) {
+      temp->next = q->head;
+      temp->product = pro;
+      //(temp->next)->prev = temp;
+      q->head = temp;
+      q->head->next = NULL;
+      q->tail = temp;
+      q->tail->next = NULL;
+      q->size = (q->size) + 1; //bumps the counter for how many elements are in the queue
+      q->ccEnBanda = q->ccEnBanda + pro.size;
     }
-
-    else
-    {
-        temp->next = q->tail;
-        q->tail->prev = temp;
-        temp->product = pro;
-        q->tail = temp;
-        q->size = (q->size) + 1; //bumps the counter for how many elements are in the queue
-        q->ccEnBanda = q->ccEnBanda + pro.size;
+    else{
+      temp->next = q->tail;
+      q->tail->prev = temp;
+      temp->product = pro;
+      q->tail = temp;
+      q->size = (q->size) + 1; //bumps the counter for how many elements are in the queue
+      q->ccEnBanda = q->ccEnBanda + pro.size;
     }
 
 }
 
-Producto *dedequeue(colaa *q){
-
-    int salida = 0;
-
-    if((q->size) == 0)
-    {
-        printf("La cola esta vacia \n");
-        return NULL;
+Producto* dedequeue(colaa* q) {
+  int salida = 0;
+    if ((q->size) == 0) {
+      printf("La cola esta vacia \n");
+      return NULL;
     }
+    else{
+      Node* temp;
+      Node* temp2;
 
-    else
-    {
-        Node *temp;
-        Node *temp2;
-
-        temp = q->head;
-        q->head = q->head->prev;
-        temp2 = temp;
-        //printf("%p\n", &(temp2->product));
-        //printf("----%s\n", casa.name);
-        free(temp);
-        q->size = (q->size) - 1; //subtracts from counter
-        q->ccEnBanda = q->ccEnBanda - temp2->product.size;
-
-        return &(temp2->product);
+      temp = q->head;
+      q->head = q->head->prev;
+      temp2 = temp;
+      //printf("%p\n", &(temp2->product));
+      //Producto casa = (temp2->product);
+      //printf("----%s\n", casa.name);
+      //q->head = temp->next;
+      free(temp);
+      q->size = (q->size) - 1; //subtracts from counter
+      q->ccEnBanda = q->ccEnBanda - temp2->product.size;
+      return &(temp2->product);
     }
 }
 
-int tope(colaa *q){
-
-    if((q->size) == 0)
-    {
-        printf("La cola esta vacia \n");
+int tope(colaa* q) {
+    if ((q->size) == 0) {
+      printf("La cola esta vacia \n");
     }
 
-    Node *temp = q->head;
+    Node* temp = q->head;
 
     Producto value = temp->product;
     printf("%d\n",value.size );
-
     return value.size;
+
 }
 
 void Menu(int *carritos, int *cantidadMaxCarrito, int *capacidadMaxBanda,
@@ -992,16 +984,16 @@ int main(int argc, char *argv[]){
     int capacidadMaxBanda = 0;
     int carritos = 3;
     int CantidadMaxCarrito = 12;
-    int instantesTiempoCliente = 0       // Contar los instantes de tiempo por cliente
-    int instantesTiempoTotal = 0         // Contar los instantes de tiempo en total
-    int lines;
+    int instantesTiempoCliente = 0;       // Contar los instantes de tiempo por cliente
+    int instantesTiempoTotal = 0;         // Contar los instantes de tiempo en total
+    int lines = 0;
     int random;                          // cantidad de productos que vamos a agarrar por cada carrito
     int random2;                         // producto a agarrar por cada iteracion
 
     Producto *arrayProductos;            // Apunta al inicio del arreglo
     Producto *copiaArrayProductos;       // Copia de la direccion en donde comienza la lista de productos
 
-    queue *cola = create_queue();        // creamos la cola donde guardamos todas las pilas de carros
+    //queue* cola = create_queue();        // creamos la cola donde guardamos todas las pilas de carros
 
     /* CREO QUE ERAN DOS LOS ARGUMENTOS... CREO
        PARA VER SI ASI SE LE QUITA UN WARNING DEL CARRIZO QUE SALE DEL MAKEFILE*/
@@ -1023,7 +1015,7 @@ int main(int argc, char *argv[]){
     printf("Lineas \n");
 
     // Recibimos la direccion donde comienza el arreglo
-    arrayProductos = read(lines,argv[1],capacidadMaxBanda);
+    arrayProductos = readd(lines,argv[1],capacidadMaxBanda, capacidadMaxAreaEmbolsado);
     //printf("-----%d\n",(*arrayProductos).size );
     copiaArrayProductos = arrayProductos;
     //printf("-----%s\n",(*copiaArrayProductos).name);
@@ -1035,7 +1027,7 @@ int main(int argc, char *argv[]){
 
     srand(time(NULL));
 
-    queue *cola = create_queue(); // creamos la cola donde guardamos todas las pilas de carros
+    queue* cola = create_queue(); // creamos la cola donde guardamos todas las pilas de carros
 
     for(int i = 0; i < carritos; i++) // iteramos por cada  carrito de cada cliente
     {
@@ -1084,46 +1076,43 @@ int main(int argc, char *argv[]){
         printf("SIZE DE LA COLA %d\n", cola->size );
     }
 
-    // apartir de aqui se deben tomar en cuenta las modalidades (un poco mas adelante)
-    //proceso completo
-
     // creamos la pila de embolsado
     stack *pilaEmbolsado;
-    pilaEmbolsado = create_stack();
-
+    //pilaEmbolsado = create_stack();
+    stack *pilaa;
+    int finEmpaquetado = 0; // cero representa el false
+    // cola de carritos != 0 y temporal del comprador != 0 y fin del empaquetado igual 1
     while((cola->size != 0) && (pilaa->size != 0) && (finEmpaquetado != 1)) // y embolsador termino de embolsar
-    {                                                                       // cola de carritos y la pila del ultimo carrito
-        stack *pilaa;
-        pilaa = dequeue(c); // guardamos la pila de productos del primer comprador
-
-
-        int finEmpaquetado = 0; // cero representa el false
-        int cajeraLibre = 1;
+    {
+        // cola de carritos y la pila del ultimo carrito
+        pilaEmbolsado = create_stack();
+        pilaa = dequeue(cola); // guardamos la pila de productos del primer comprador
+        int cajeraLibre = 1; // la cajera esta libre
         int tiempoFact = 0; // Tiempo que se tarda por cliente
         int embolsadorFull = 0; // el embolsador no esta full
+        int finEmpaquetado = 0; // cero representa el false
+        int temporalComplejidad;
+        // Aqui se llena la banda cada ciclo antes de que la cajera tome el producto
+        // se crea la cola de la banda transportadora
+        colaa* colax = crecreate_queue();
 
         // atendemos a cada cliente
         while((pilaa->size != 0) && (finEmpaquetado != 1)) // y la banda transportadora este vacia
         {
-            int cantidadActualBanda = 0; // Cuenta el espacio almacenado de la banda
+            //int cantidadActualBanda = 0; // Cuenta el espacio almacenado de la banda
             //int finEmpaquetado = 0; // cero representa el false
-
             int llenarBanda = 0;
-            // Aqui se llena la banda cada ciclo antes de que la cajera tome el producto
-            // se crea la cola de la banda transportadora
-            colaa colax = crecreate_queue();
             int chequeo;
-            Producto produ;
+            Producto* produ;
 
             while(llenarBanda != 1)
             {
                 // se llena la banda transportadora hasta su maxima capacidad posible
                 chequeo = top(pilaa);
-
-                if(((colaa->ccEnBanda)+chequeo) <= capacidadMaxBanda)
+                if(((colax->ccEnBanda)+chequeo) <= capacidadMaxBanda)
                 {
-                    &produ = pop(pilaa);
-                    enenqueue(colax,produ);
+                    produ = pop(pilaa);
+                    enenqueue(colax,*produ);
                 }
 
                 else
@@ -1131,219 +1120,76 @@ int main(int argc, char *argv[]){
                     llenarBanda = 1;
                 }
             }
+              // Si el embolsador tiene espacio, la cajera trabaja normal, en caso contrario para su trabajo
+            if (embolsadorFull == 0) {
+              if((cajeraLibre == 1) && (colax->size > 0))
+              {
+                  // procedemos a atender a la velocidad de la cajera
+                  temporalComplejidad = 0;
+                  produ = dedequeue(colax);
+                  tiempoFact = tiempoFact + 1;
 
-            // si hay elementos en la banda transportadora
-            // Aqui se pone el enter y la cajera empieza a atender y se mide el tiempo
-            // creoque si no esta asi pede caer en bucle infinito, pero tambien ten en cuenta que
-            // es la 1:30, desde las 6:30 pm no he comido para el examen de sangre de mas tarde
-            // y creo que deberia estar durmiendo, es decir, que puedo estar peldisisisissiimo
-            // sin ningun tipo de problema.
-            if((cajeraLibre == 1) && (cola->size > 0))
-            {
-                // procedemos a atender a la velocidad de la cajera
-                int temporalComplejidad = 0;
-                produ = dedequeue(cola)
+                  if(velocidadCajera < produ->complex)
+                  {
+                      temporalComplejidad = produ->complex - velocidadCajera;
+                      cajeraLibre = 0;
+                      //tiempoFact = tiempoFact + 1;
+                      //usleep(velocidadCajera*1000000); // descansa un segundo o tiempo de la cajera (para 2do caso poner la variable dentro del sleep)
+                      usleep(1000000);
+                  }
 
-                if(velocidadCajera < produ.complex)
-                {
-                    temporalComplejidad = produ.complex - velocidadCajera;
-                    cajeraLibre = 0;
-                    tiempoFact = tiempoFact + 1;
-                    usleep(velocidadCajera*1000000); // descansa un segundo o tiempo de la cajera (para 2do caso poner la variable dentro del sleep)
+                  else if(velocidadCajera >= produ->complex)
+                  {
+                      //tiempoFact = tiempoFact + (produ.complex/velocidadCajera); // ya que la cajera es mas rapida que el tiempo de complejidad
+                      //tiempoFact = tiempoFact + 1;
+                      cajeraLibre = 1;
+                      //usleep(velocidadCajera*1000000);
+                      usleep(1000000);
+                      // PASAMOS PRODUCTO AL EMBOLSADOR +++++
+                  }
                 }
-
-                 else if(velocidadCajera >= produ.complex)
+                else if(cajeraLibre == 0)
                 {
-                    //tiempoFact = tiempoFact + (produ.complex/velocidadCajera); // ya que la cajera es mas rapida que el tiempo de complejidad
-                    tiempoFact = tiempoFact + 1;
-                    cajeraLibre = 1;
-                    usleep(velocidadCajera*1000000);
-                 }
-            }
-
-            else if(cajeraLibre == 0)
-            {
-                if(velocidadCajera < temporalComplejidad)
-                {
+                  if(velocidadCajera < temporalComplejidad)
+                  {
                     temporalComplejidad = temporalComplejidad - velocidadCajera;
                     cajeraLibre = 0;
-                    usleep(velocidadCajera*1000000); // descansa un segundo o tiempo de la cajera (para 2do caso poner la variable dentro del sleep)
-                }
-
-                else if(velocidadCajera >= temporalComplejidad)
-                {
-                    //tiempoFact = tiempoFact + (temporalComplejidad/velocidadCajera);
-                    tiempoFact = tiempoFact + 1;
-                    cajeraLibre = 1;
-                    usleep(velocidadCajera*1000000);
-                }
-                // si la cajera esta libre en este punto es porque acaba de liberar el producto
-
-                if (cajeraLibre == 1) {
-                  // agregamos a la pila del embolsador si el area del embolsador no esta full
-                  // creamos booleano si el area de embolsado esta full para que la cajera no siga agregando
-                  // productos al area del embolsado
-                  if (((pilaEmbolsado->ccEnEmbolsado)+produ.size) <= capacidadMaxAreaEmbolsado) {
-                    push(pilaEmbolsado, produ);
+                    //usleep(velocidadCajera*1000000); // descansa un segundo o tiempo de la cajera (para 2do caso poner la variable dentro del sleep)
+                    usleep(1000000);
+                    // PASAMOS PRODUCTO AL EMBOLSADOR +++++
+                    push(pilaEmbolsado, *produ);
                   }
-
-                  else{
-                    embolsadorFull = 1;
+                  else if(velocidadCajera >= temporalComplejidad)
+                  {
+                      //tiempoFact = tiempoFact + (temporalComplejidad/velocidadCajera);
+                      tiempoFact = tiempoFact + 1;
+                      cajeraLibre = 1;
+                      //usleep(velocidadCajera*1000000);
+                      usleep(1000000);
                   }
-                }
+              }
+              // si la cajera esta libre en este punto es porque acaba de liberar el producto
 
-            // es en este momento que atiende el embolsador
+              if (cajeraLibre == 1) {
+                // agregamos a la pila del embolsador si el area del embolsador no esta full
+                // creamos booleano si el area de embolsado esta full para que la cajera no siga agregando
+                // productos al area del embolsado
+                if (((pilaEmbolsado->ccEnEmbolsado)+produ->size) <= capacidadMaxAreaEmbolsado) {
+                  push(pilaEmbolsado, *produ);
+                  //embolsadorFull = 0;
+                }
+                else{
+                  embolsadorFull = 1;
+                }
+              }
+            }
+            // si el embolsador esta full la cajera espera a que habra espacio
+            else{
+              usleep(1000000);
             }
 
+            /*while ((pilaEmbolsado->size)!= 0) {
+            }*/
         }
-
-    }
-
-    return 0; // tuve que cambiar el main a int y poner el return, sino, el makefile da error
-
-}
-
-/* +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-   ++++++++++++++++++++++ dejo este main aqui por si toque algo que no debia +++++++++++++++++++++++
-   +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++ */
-
-/*void main(int argc, char *argv[])
-{
-  Producto* arrayProductos; // Apunta al inicio del arreglo
-  Producto* copiaArrayProductos; // Copia de la direccion en donde comienza la lista de productos
-  int lines;
-  // lines contiene el numero de lineas en el archivo
-  lines = countlines(argv[1]);
-  printf("LINES: %d\n",lines);
-  printf("Lineas \n");
-  // Recibimos la direccion donde comienza el arreglo
-  arrayProductos = read(lines,argv[1]);
-  //printf("-----%d\n",(*arrayProductos).size );
-  copiaArrayProductos = arrayProductos;
-  //printf("-----%s\n",(*copiaArrayProductos).name);
-
-  int carritos = 3;
-  int CantidadMaxCarrito = 12;
-  int random; // cantidad de productos que vamos a agarrar por cada carrito
-  int random2; // producto a agarrar por cada iteracion
-  srand(time(NULL));
-  queue* cola = create_queue(); // creamos la cola donde guardamos todas las pilas de carros
-  for(int i = 0; i < carritos;i++){ // iteramos por cada  carrito de cada cliente
-    random = (rand() % CantidadMaxCarrito) + 1; // seleccionamos al azar la cantidad de productos que va a tener el carrito de cada cliente
-    printf("RANDOM 1: %d\n",random );
-    printf("LISTA %d------------------\n",i+1 );
-    node *lista = createList();
-    for (int j = 0; j < random; j++) {
-      random2 = (rand() % lines) + 1; // escogemos de manera al azar los productos que va a tener cada carrito
-      //printf("RANDOM 2 :%d\n",random2 );
-      arrayProductos = copiaArrayProductos;
-      for (int k = 0; k < lines; k++) {
-        // metemos los productos en la lista ordenada
-        if ((*arrayProductos).num == random2) {
-          insert((&lista),(*arrayProductos));
-          printf("NAME %s\n",(*arrayProductos).name );
-          break;
-        }
-        arrayProductos++;
       }
-    }
-    printf("IMPRIMOS LISTA++++++++ %d\n",i+1 );
-    //printList(lista);
-
-    // los pasamos ya ordenado de mayor a menor a la pila (el carrito)
-
-    stack* pila = create_stack();
-
-    while ( lista != NULL ) {
-       printf("Nombre: %s  size %d complex %d num %d\n",lista->product.name,lista->product.size,lista->product.complex,lista->product.num);
-       push(pila, lista->product); // empilamos los productos al carrito
-       lista = lista->next;
-       //printf("SIZE %d\n", pila->size );
-    }
-    // ponemos al cliente a hacer la cola de la caja de acuerdo al orden de llegada
-
-    enqueue(cola, pila); //guardamos la pila en la cola
-    printf("SIZE DE LA COLA %d\n", cola->size );
   }
-  int velocidadCajera = 1;             // velocidad de la cajera en operaciones or segundo
-	int velocidadEmbolsador = 4;         // velocidad del embolsador en segundos por bolsa
-	int tiempoFacturacion = 130;         // tiempo de facturacion en segundos
-	int capacidadMaxAreaEmbolsado = 150; // capacidad del area de embolsado en centimetros cubicos
-	int capacidadMaxBolsa = 120;         // caacidad maxima de una bolsa en centimetros cubicos
-  int capacidadMaxBanda = 200;
-
-  // apartir de aqui se deben tomar en cuenta las modalidades (un poco mas adelante)
-  //proceso completo
-  while ((cola->size != 0) && (pilaa->size != 0) && (finEmpaquetado != 1)) { // y embolsador termino de embolsar
-    // cola de carritos   y la pila del ultimo carrito
-    stack* pilaa;
-    pilaa = dequeue(c);
-    int finEmpaquetado = 0; // cero representa el false
-    int cajeraLibre = 1;
-    int tiempoFact = 0;
-
-    // atendemos a cada cliente
-    while ((pilaa->size != 0) && (finEmpaquetado != 1)) { // y la banda transportadora este vacia
-      int cantidadActualBanda = 0; // Cuenta el espacio almacenado de la banda
-      //int finEmpaquetado = 0; // cero representa el false
-
-      int llenarBanda = 0;
-      // Aqui se llena la banda cada ciclo antes de que la cajera tome el producto
-      // se crea la cola de la banda transportadora
-      colaa colax = crecreate_queue();
-      int chequeo;
-      Producto produ;
-
-      while (llenarBanda != 1) {
-        // se llena la banda transportadora hasta su maxima capacidad posible
-        chequeo = top(pilaa);
-        if (((colaa->ccEnBanda)+chequeo) <= capacidadMaxBanda) {
-          &produ = pop(pilaa);
-          enenqueue(colax,produ);
-        }
-        else{
-          llenarBanda = 1;
-        }
-      }
-      // si hay elementos en la banda transportadora
-      // Aqui se pone el enter y la cajera empieza a atender y se mide el tiempo
-
-      if ((cajeraLibre == 1) && (cola->size > 0)) {
-        // procedemos a atender a la velocidad de la cajera
-        int temporalComplejidad = 0;
-        produ = dedequeue(cola)
-        if (velocidadCajera < produ.complex ) {
-          tiempoFact = tiempoFact + 1;
-          temporalComplejidad = produ.complex - velocidadCajera;
-          cajeraLibre = 0;            sleep(1); // descansa un segundo o tiempo de la cajera (para 2do caso poner la variable dentro del sleep)
-        }
-        elif(velocidadCajera >= produ.complex){
-          tiempoFact = tiempoFact + (produ.complex/velocidadCajera); // ya que la cajera es mas rapida que el tiempo de complejidad
-          cajeraLibre = 1;
-          sleep(1);
-        }
-      elif(cajeraLibre == 0){
-        if (velocidadCajera < temporalComplejidad ) {
-          tiempoFact = tiempoFact + 1;
-          temporalComplejidad = temporalComplejidad - velocidadCajera;
-          cajeraLibre = 0;
-          sleep(1); // descansa un segundo o tiempo de la cajera (para 2do caso poner la variable dentro del sleep)
-        }
-        elif(velocidadCajera >= temporalComplejidad){
-          tiempoFact = tiempoFact + (temporalComplejidad/velocidadCajera);
-          cajeraLibre = 1;
-          sleep(1);
-        }
-      }
-        // se en este momento atiende el embolsador
-    }
-
-
-
-
-
-    }
-
-  }
-
-}*/
