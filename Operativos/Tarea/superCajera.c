@@ -230,7 +230,7 @@ void push(stack *s, Producto pro){
     {
         temp->next = s->head;
         temp->product = pro;
-        s->ccEnBanda = s->ccEnBanda + pro.size;
+        s->ccEnEmbolsado = s->ccEnEmbolsado + pro.size;
         s->head = temp;
         s->size = (s->size) + 1; //bumps the counter for how many elements are in the stack
     }
@@ -255,7 +255,7 @@ Producto *pop(stack *s){
         s->head = temp->next;
         s->size = (s->size) - 1; //subtracts from counter
         temp2 = temp;
-        s->ccEnBanda = s->ccEnBanda - temp2->product.size;
+        s->ccEnEmbolsado = s->ccEnEmbolsado - temp2->product.size;
         //printf("%p\n", &(temp2->product));
         //printf("%s\n", casa.name);
         free(temp);
