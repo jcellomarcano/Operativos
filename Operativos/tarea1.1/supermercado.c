@@ -43,22 +43,22 @@ int main(int argc, char *argv[]){
     queue *cola = create_queue(); // creamos la cola donde guardamos todas las pilas de carros
 
     for(int i = 0; i < carritos;i++) // iteramos por cada  carrito de cada cliente
-    { 
+    {
         random = (rand() % CantidadMaxCarrito) + 1; // seleccionamos al azar la cantidad de productos que va a tener el carrito de cada cliente
         printf("RANDOM 1: %d\n",random );
         printf("LISTA %d------------------\n",i+1 );
         node *lista = createList();
 
-        for (int j = 0; j < random; j++) 
+        for (int j = 0; j < random; j++)
         {
             random2 = (rand() % lines) + 1; // escogemos de manera al azar los productos que va a tener cada carrito
             //printf("RANDOM 2 :%d\n",random2 );
             arrayProductos = copiaArrayProductos;
 
-            for (int k = 0; k < lines; k++) 
+            for (int k = 0; k < lines; k++)
             {
                 // metemos los productos en la lista ordenada
-                if ((*arrayProductos).num == random2) 
+                if ((*arrayProductos).num == random2)
                 {
                     insert((&lista),(*arrayProductos));
                     printf("NAME %s\n",(*arrayProductos).name );
@@ -76,7 +76,7 @@ int main(int argc, char *argv[]){
 
         stack* pila = create_stack();
 
-        while ( lista != NULL ) 
+        while ( lista != NULL )
         {
             printf("Nombre: %s  size %d complex %d num %d\n",lista->product.name,lista->product.size,lista->product.complex,lista->product.num);
             push(pila, lista->product); // empilamos los productos al carrito
@@ -92,7 +92,7 @@ int main(int argc, char *argv[]){
     // apartir de aqui se deben tomar en cuenta las modalidades (un poco mas adelante)
     //proceso completo
     /*while ((cola->size != 0) && (pilaa->size != 0)) // y embolsador termino de embolsar
-    { 
+    {
 
         stack* pilaa;
         pilaa = dequeue(c);
@@ -100,7 +100,7 @@ int main(int argc, char *argv[]){
 
         // atendemos a cada cliente
         while ((pilaa->size != 0) && (finEmpaquetado != 1)) // y la banda transportadora este vacia
-        { 
+        {
             int cantidadActualBanda = 0; // Cuenta el espacio almacenado de la banda
             //int finEmpaquetado = 0; // cero representa el false
 
@@ -111,12 +111,12 @@ int main(int argc, char *argv[]){
             int chequeo;
             Producto produ;
 
-            while (llenarBanda != 1) 
+            while (llenarBanda != 1)
             {
                 // se llena la banda transportadora hasta su maxima capacidad posible
                 chequeo = top(pilaa);
 
-                if (((colaa->ccEnBanda)+chequeo) <= capacidadMaxBanda) 
+                if (((colaa->ccEnBanda)+chequeo) <= capacidadMaxBanda)
                 {
                     &produ = pop(pilaa);
                     enenqueue(colax,produ);
