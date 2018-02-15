@@ -1086,10 +1086,17 @@ int main(int argc, char *argv[]){
 
     // apartir de aqui se deben tomar en cuenta las modalidades (un poco mas adelante)
     //proceso completo
+
+    // creamos la pila de embolsado
+    stack *pilaEmbolsado;
+    pilaEmbolsado = create_stack();
+
     while((cola->size != 0) && (pilaa->size != 0) && (finEmpaquetado != 1)) // y embolsador termino de embolsar
     {                                                                       // cola de carritos y la pila del ultimo carrito
         stack *pilaa;
-        pilaa = dequeue(c);
+        pilaa = dequeue(c); // guardamos la pila de productos del primer comprador
+
+
         int finEmpaquetado = 0; // cero representa el false
         int cajeraLibre = 1;
         int tiempoFact = 0; // Tiempo que se tarda por cliente
@@ -1169,6 +1176,20 @@ int main(int argc, char *argv[]){
                     tiempoFact = tiempoFact + 1;
                     cajeraLibre = 1;
                     usleep(velocidadCajera*1000000);
+                }
+                // si la cajera esta libre en este punto es porque acaba de liberar el producto
+
+                if (cajeraLibre == 1) {
+                  // agregamos a la pila del embolsador si el area del embolsador no esta full
+                  // creamos booleano si el area de embolsado esta full para que la cajera no siga agregando
+                  // productos al area del embolsado
+                  if (((pilaEmbolsado->ccEnEmbolsado)+produ.size) <= capacidadMaxAreaEmbolsado) {
+                    push(pilaEmbolsado, produ);
+                  }
+
+                  else{
+                    embolsadorFull = 1;
+                  }
                 }
 
             // es en este momento que atiende el embolsador
