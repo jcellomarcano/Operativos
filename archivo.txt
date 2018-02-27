@@ -1,0 +1,14 @@
+/annehelen/Escritorio
+/annehelen/Escritorio/jcellomarcano
+/annehelen/Escritorio/C
+/annehelen/Escritorio/Directorio
+/annehelen/Escritorio/Directorio/Dir3
+/annehelen/Escritorio/Directorio/Dir3/Subdir1
+/annehelen/Escritorio/Directorio/Dir3/Subdir2
+/annehelen/Escritorio/Directorio/Dir3/Subdir2/Subdir1
+/annehelen/Escritorio/Directorio/Dir3/Subdir2/Subdir2
+/annehelen/Escritorio/Directorio/Dir4
+/annehelen/Escritorio/Directorio/Dir4/Subdir1
+/annehelen/Escritorio/Directorio/Dir2
+/annehelen/Escritorio/Directorio/Dir2/Subdir1
+/annehelen/Escritorio/Directorio/Dir2/Subdir2
